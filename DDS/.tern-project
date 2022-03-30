@@ -1,16 +1,24 @@
 {
+  "ecmaVersion": 5,
   "plugins": {
     "guess-types": {
       
     },
     "outline": {
       
+    },
+    "browser-extension": {
+      
+    },
+    "bootstrap": {
+      
+    },
+    "jquery-extension": {
+      
     }
   },
-  "ecmaVersion": 5,
-  "ide": {
-    "scriptPaths": [
-      
-    ]
-  }
+  "libs": [
+    "browser",
+    "jquery"
+  ]
 }
