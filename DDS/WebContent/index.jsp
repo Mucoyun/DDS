@@ -11,7 +11,100 @@
 	<div class="container">
 		<%@ include file="/01_Main/header.jsp" %>
 		
-		<%@ include file="/01_Main/section.jsp" %>
+		<%@ include file="/DBConn.jsp" %>
+		<%
+		String sb_id = (String)session.getAttribute("s_id");
+		if(sb_id==null){
+			%>
+			<div class="py-5 d-flex justify-content-center" style="height: 500px;">
+				<div class="align-self-center">
+					<p class="fw-bold display-4 text-center">Welcome to To-Do List</p>
+					<p class="fs-3 text-center">Login and use the To-Do List</p>
+				</div>
+			</div>
+			<%
+			}else{
+				try{
+					int class1 =0;
+					int order = 0;
+					int group = 0;
+					
+					String sql = "select title,content,boardcode from board where writer=? order by updatedate desc";
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setString(1, sb_id);
+					rs = pstmt.executeQuery();
+					while(rs.next()){
+						String title = rs.getString(1);
+						String content = rs.getString(2);
+						int boardcode = rs.getInt(3);
+						
+						class1++;
+						order++;
+						group++;
+						
+						%>
+						<div class="card border-dark my-3 mx-4">
+							<div class="card-header text-start bg-white border-bottom border-white">
+							    <a href="#" class="btn btn-outline-dark">
+								    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+							 	 		<path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
+									</svg>
+							    </a>
+							</div>
+							<div class="card-body text-dark text-center bg-white">
+								<h5 class="card-title fw-bold"><%=title %></h5>
+							    <p class="card-text"><%=content %></p>
+							</div>
+							<div class="card-footer text-muted bg-white  border-top border-white">
+							    <div class="row">
+							    	<div class="col-6 text-start">
+								    	<!-- 댓글 버튼 -->
+									    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedChat<%=boardcode %>" aria-controls="navbarSupportedChat<%=boardcode %>" aria-expanded="false" aria-label="Toggle navigation">
+									      	<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-chat-dots" viewBox="0 0 16 16">
+											  <path d="M5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+											  <path d="m2.165 15.803.02-.004c1.83-.363 2.948-.842 3.468-1.105A9.06 9.06 0 0 0 8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6a10.437 10.437 0 0 1-.524 2.318l-.003.011a10.722 10.722 0 0 1-.244.637c-.079.186.074.394.273.362a21.673 21.673 0 0 0 .693-.125zm.8-3.108a1 1 0 0 0-.287-.801C1.618 10.83 1 9.468 1 8c0-3.192 3.004-6 7-6s7 2.808 7 6c0 3.193-3.004 6-7 6a8.06 8.06 0 0 1-2.088-.272 1 1 0 0 0-.711.074c-.387.196-1.24.57-2.634.893a10.97 10.97 0 0 0 .398-2z"/>
+											</svg>
+									    </button>
+								    </div>
+								    <div class="col-6 text-end">
+								    	<!-- 수정 버튼 -->
+									    <a href="/DDS/03_Board/board_update.jsp?send_boardcode=<%=boardcode %>" class="btn btn-outline-dark px-4">
+										    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+											  	<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+											  	<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+											</svg>
+									    </a>
+									    <!-- 삭제 버튼 -->
+									    <a href="/DDS/03_Board/board_delete.jsp?send_boardcode=<%=boardcode %>" class="btn btn-outline-dark px-4" onclick="if(!confirm('정말로 삭제하시겠습니까?')){ return false; }">
+									    	<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+										  		<path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+										  		<path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+											</svg>
+									    </a>
+								    </div>
+							    </div>
+							</div>
+							<div class="card-footer collapse navbar-collapse text-start bg-white border-top border-white" id="navbarSupportedChat<%=boardcode %>">
+								<form name="Comments_form" method="post" action="/DDS/04_Comments/Comments_insert.jsp?boardcode=<%=boardcode %>&class1=<%=class1 %>&order=<%=order %>&group=<%=group %>">
+									<div class="row">
+										<div class="col-10 text-start">
+											<input type="text" name="comments" class="form-control" id="floatingInput" placeholder="Comments">	
+										</div>
+										<div class="col-2 text-end">
+											<button class="btn btn-dark" type="submit">입력</button>
+										</div>
+									</div>
+								</form>
+								
+							</div>
+						</div>
+						<%
+					}
+				}catch(SQLException e){
+					e.printStackTrace();
+				}
+			}
+		%>
 		
 		<%@ include file="/01_Main/footer.jsp" %>
 	</div>
